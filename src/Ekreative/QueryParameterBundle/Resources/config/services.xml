@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://symfony.com/schema/dic/services"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="query_parameter.manager" class="Ekreative\QueryParameterBundle\Manager\QueryManager">
+            <call method="setValidator">
+                <argument type="service" id="validator"/>
+            </call>
+        </service>
+
+        <service id="query_parameter.listener" class="Ekreative\QueryParameterBundle\Listener\QueryConverterListener">
+            <tag name="kernel.event_subscriber"/>
+            <call method="setQueryManager">
+                <argument type="service" id="query_parameter.manager"/>
+            </call>
+        </service>
+    </services>
+</container>

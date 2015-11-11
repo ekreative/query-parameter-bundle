@@ -1,0 +1,26 @@
+{
+    "name": "ekreative/query-parameter-bundle",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "keywords": ["annotations","query","query-parameter"],
+    "authors": [
+        {
+            "name": "Alex Moshta",
+            "email": "ahonyous@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ekreative\\QueryParameterBundle\\": "src/Ekreative/QueryParameterBundle/"
+        }
+    },
+    "require": {
+        "php": ">=5.5.9",
+        "symfony/symfony": "~2.7",
+        "sensio/framework-extra-bundle": "^3.0.2"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "minimum-stability": "stable"
+}
