@@ -35,11 +35,17 @@ class QueryManager
     {
         $this->validator = $validator;
 
+        $int = $this->getIntTransformer();
+        $bool = $this->getBoolTransformer();
+        $double = $this->getFloatTransformer();
         $this->transformers = [
-            'integer' => $this->getIntTransformer(),
+            'integer' => $int,
+            'int' => $int,
             'datetime' => $this->getDateTimeTransformer(),
-            'boolean' => $this->getBoolTransformer(),
-            'double' => $this->getFloatTransformer(),
+            'boolean' => $bool,
+            'bool' => $bool,
+            'double' => $double,
+            'float' => $double,
         ];
     }
 
