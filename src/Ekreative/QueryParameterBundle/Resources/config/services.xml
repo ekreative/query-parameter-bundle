@@ -6,16 +6,12 @@
 
     <services>
         <service id="query_parameter.manager" class="Ekreative\QueryParameterBundle\Manager\QueryManager">
-            <call method="setValidator">
-                <argument type="service" id="validator"/>
-            </call>
+            <argument type="service" id="validator"/>
         </service>
 
         <service id="query_parameter.listener" class="Ekreative\QueryParameterBundle\Listener\QueryConverterListener">
             <tag name="kernel.event_subscriber"/>
-            <call method="setQueryManager">
-                <argument type="service" id="query_parameter.manager"/>
-            </call>
+            <argument type="service" id="query_parameter.manager"/>
         </service>
     </services>
 </container>

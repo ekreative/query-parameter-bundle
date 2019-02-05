@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="vendor/autoload.php" colors="true">
+    <testsuites>
+        <testsuite name="Uuid Param Converter Bundle Test Suite">
+            <directory>tests/Ekreative/QueryParameterBundle/Tests/</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <server name="KERNEL_CLASS" value="TestKernel" />
+    </php>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/Ekreative/QueryParameterBundle/</directory>
+        </whitelist>
+    </filter>
+</phpunit>

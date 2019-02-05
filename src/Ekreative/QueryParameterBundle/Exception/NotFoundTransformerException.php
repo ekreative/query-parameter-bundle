@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekreative\QueryParameterBundle\Exception;
 
 class NotFoundTransformerException extends \Exception

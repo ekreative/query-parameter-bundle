@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekreative\QueryParameterBundle\Listener;
 
 use Ekreative\QueryParameterBundle\Manager\QueryManager;
@@ -14,42 +16,20 @@ class QueryConverterListener implements EventSubscriberInterface
      */
     private $queryManager;
 
-    /**
-     * @return QueryManager
-     */
-    public function getQueryManager()
-    {
-        return $this->queryManager;
-    }
-
-    /**
-     * @param QueryManager $queryManager
-     */
-    public function setQueryManager($queryManager)
+    public function __construct(QueryManager $queryManager)
     {
         $this->queryManager = $queryManager;
     }
 
-    /**
-     * Modifies the QueryManager instance.
-     *
-     * @param FilterControllerEvent $event A FilterControllerEvent instance
-     */
     public function onKernelController(FilterControllerEvent $event)
     {
         $request = $event->getRequest();
 
         if ($configurations = $request->attributes->get('_queries')) {
-            $this->getQueryManager()->manage(
-                $request,
-                is_array($configurations) ? $configurations : [$configurations]
-            );
+            $this->queryManager->manage($request, (array) $configurations);
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents()
     {
         return [

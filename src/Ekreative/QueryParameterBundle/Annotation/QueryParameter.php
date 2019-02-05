@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekreative\QueryParameterBundle\Annotation;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -7,7 +9,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * The QueryParameter class handles the query string.
  *
- * @package AppBundle\Annotation
  * @author Alex Moshta <ahonymous@gmail.com>
  *
  * @Annotation

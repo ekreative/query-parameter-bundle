@@ -1,0 +1,26 @@
+framework:
+    test: ~
+    session:
+        storage_id: session.storage.mock_file
+    router:
+        resource: "%kernel.root_dir%/routing.yml"
+        strict_requirements: ~
+    secret: 'fake_secret'
+
+monolog:
+    handlers:
+        main:
+            type: console
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Ekreative\QueryParameterBundle\Controller\TestController:
+        autowire: true
+        autoconfigure: true
+
+    Ekreative\QueryParameterBundle\Controller\:
+        resource: '../tests/Ekreative/QueryParameterBundle/Controller'
+        tags: ['controller.service_arguments']

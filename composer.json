@@ -14,12 +14,22 @@
             "Ekreative\\QueryParameterBundle\\": "src/Ekreative/QueryParameterBundle/"
         }
     },
-    "require": {
-        "php": ">=5.5.9",
-        "symfony/symfony": "~2.7|~3.0",
-        "sensio/framework-extra-bundle": ">=3.0"
+    "autoload-dev": {
+        "psr-4": { "Ekreative\\QueryParameterBundle\\": "tests/Ekreative/QueryParameterBundle/" },
+        "classmap": ["tests/TestKernel.php"]
     },
-    "config": {
-        "bin-dir": "bin"
+    "require": {
+        "php": ">=7.1",
+        "symfony/framework-bundle": "~3.0|^4.0",
+        "sensio/framework-extra-bundle": "^3.0|^4.0|^5.0",
+        "symfony/validator": "^4.2",
+        "symfony/form": "^4.2"
+    },
+    "require-dev": {
+        "symfony/browser-kit": "^3.0|^4.0",
+        "phpunit/phpunit": "^7.0",
+        "symfony/monolog-bundle": "^3.0|^4.0",
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "symfony/yaml": "^3.0|^4.0"
     }
 }

@@ -1,0 +1,4 @@
+query_parameter:
+    resource: "Ekreative/QueryParameterBundle/Controller/TestController.php"
+    type:     annotation
+    prefix:   /

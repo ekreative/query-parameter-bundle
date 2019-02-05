@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekreative\QueryParameterBundle\Annotation;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationInterface;
@@ -8,7 +10,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * The QueryAnnotation class handles the query string.
  *
- * @package AppBundle\Annotation
  * @author Alex Moshta <ahonymous@gmail.com>
  *
  * @Annotation
@@ -44,8 +45,8 @@ abstract class QueryAnnotation implements ConfigurationInterface
     public function __construct(array $values)
     {
         foreach ($values as $k => $v) {
-            if (!method_exists($this, $name = 'set' . $k)) {
-                throw new \RuntimeException(sprintf('Unknown key "%s" for annotation "@%s".', $k, get_class($this)));
+            if (!method_exists($this, $name = 'set'.$k)) {
+                throw new \RuntimeException(sprintf('Unknown key "%s" for annotation "@%s".', $k, \get_class($this)));
             }
 
             $this->$name($v);

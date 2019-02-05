@@ -1,27 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ekreative\QueryParameterBundle\Manager;
 
-use Doctrine\Common\Annotations\AnnotationException;
 use Ekreative\QueryParameterBundle\Annotation\QueryModel;
 use Ekreative\QueryParameterBundle\Annotation\QueryParameter;
-use Ekreative\QueryParameterBundle\DataTransformer\BooleanToStringTransformer;
-use Ekreative\QueryParameterBundle\Exception\BadRequest;
 use Ekreative\QueryParameterBundle\Exception\ChoiceBadParameterException;
 use Ekreative\QueryParameterBundle\Exception\NotFoundTransformerException;
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Extension\Core\DataTransformer\BooleanToStringTransformer;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer;
 use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-/**
- * Class QueryManager
- * @package AppBundle\Manager
- */
 class QueryManager
 {
     /**
@@ -34,8 +31,10 @@ class QueryManager
      */
     private $transformers;
 
-    public function __construct()
+    public function __construct(ValidatorInterface $validator)
     {
+        $this->validator = $validator;
+
         $this->transformers = [
             'integer' => $this->getIntTransformer(),
             'datetime' => $this->getDateTimeTransformer(),
@@ -45,27 +44,10 @@ class QueryManager
     }
 
     /**
-     * @return ValidatorInterface
-     */
-    public function getValidator()
-    {
-        return $this->validator;
-    }
-
-    /**
-     * @param ValidatorInterface $validator
-     */
-    public function setValidator($validator)
-    {
-        $this->validator = $validator;
-    }
-
-    /**
      * @param Request $request
-     * @param array $configurations
+     * @param array   $configurations
      *
      * @return Request
-     * @throws AnnotationException
      */
     public function manage(Request $request, array $configurations)
     {
@@ -81,7 +63,7 @@ class QueryManager
                 $parametersName[] = $configuration->getName();
             }
         }
-        if (count($parametersName) > 0) {
+        if (\count($parametersName) > 0) {
             $this->checkParameters($parametersName, array_keys($request->query->all()));
         }
 
@@ -92,23 +74,24 @@ class QueryManager
      * @param array $params
      * @param array $requestParams
      *
-     * @throws BadRequest
+     * @throws BadRequestHttpException
      */
     private function checkParameters(array $params, array $requestParams)
     {
         foreach ($requestParams as $param) {
-            if (!in_array($param, $params)) {
-                throw new BadRequest(sprintf('Query parameter `%s` is not defined', $param));
+            if (!\in_array($param, $params)) {
+                throw new BadRequestHttpException(sprintf('Query parameter `%s` is not defined', $param));
             }
         }
     }
 
     /**
-     * @param Request $request
+     * @param Request    $request
      * @param QueryModel $configuration
      *
      * @return Request
-     * @throws BadRequest
+     *
+     * @throws BadRequestHttpException
      * @throws NotFoundTransformerException
      */
     protected function manageQueryModel(Request $request, QueryModel $configuration)
@@ -116,7 +99,7 @@ class QueryManager
         $className = $configuration->getClass();
         $types = $configuration->getOptions()['types'];
         $filter = new $className();
-        $filterClass = new \ReflectionClass(get_class($filter));
+        $filterClass = new \ReflectionClass(\get_class($filter));
 
         $options = [];
         /** @var \ReflectionProperty $property */
@@ -130,7 +113,7 @@ class QueryManager
         $parameters = $request->query->all();
         foreach ($types as $k => $type) {
             $queryParam = $request->query->get($k);
-            if (!is_null($queryParam)) {
+            if (null !== $queryParam) {
                 $transformer = $this->getTransformer($type);
                 $parameters[$k] = $transformer->reverseTransform(false == $queryParam ? null : $queryParam);
                 $resolver->setAllowedTypes($k, $type);
@@ -142,15 +125,15 @@ class QueryManager
 
         foreach ($queries as $k => $v) {
             if (!$accessor->isWritable($filter, $k)) {
-                throw new \RuntimeException(sprintf('Unknown key "%s" for filter "@%s".', $k, get_class($this)));
+                throw new \RuntimeException(sprintf('Unknown key "%s" for filter "@%s".', $k, \get_class($this)));
             }
 
             $accessor->setValue($filter, $k, $v);
         }
 
-        $errors = $this->getValidator()->validate($filter);
-        if (count($errors) > 0) {
-            throw new BadRequest('Bad query filter options.');
+        $errors = $this->validator->validate($filter);
+        if (\count($errors) > 0) {
+            throw new BadRequestHttpException('Bad query filter options.');
         }
 
         $request->attributes->set($configuration->getName(), $filter);
@@ -159,11 +142,12 @@ class QueryManager
     }
 
     /**
-     * @param Request $request
+     * @param Request        $request
      * @param QueryParameter $configuration
      *
      * @return Request
-     * @throws BadRequest
+     *
+     * @throws BadRequestHttpException
      * @throws ChoiceBadParameterException
      * @throws NotFoundTransformerException
      */
@@ -173,9 +157,9 @@ class QueryManager
 
         $parameter = $request->query->get($parameterName);
 
-        if (is_null($parameter)) {
+        if (null === $parameter) {
             if ($configuration->getOptions()['required']) {
-                throw new BadRequest(sprintf('Missing query parameter %s.', $parameterName));
+                throw new BadRequestHttpException(sprintf('Missing query parameter %s.', $parameterName));
             }
             $request->attributes->set($parameterName, $parameter);
 
@@ -187,18 +171,18 @@ class QueryManager
             $transformedParameter = $transformer->reverseTransform($parameter);
 
             $request->attributes->set($parameterName, $transformedParameter);
-        } elseif (!in_array($parameter, $configuration->getOptions()['choices'])) {
+        } elseif (!\in_array($parameter, $configuration->getOptions()['choices'])) {
             throw new ChoiceBadParameterException($parameterName);
         }
 
         return $request;
     }
 
-
     /**
      * @param $name
      *
      * @return DataTransformerInterface
+     *
      * @throws NotFoundTransformerException
      */
     protected function getTransformer($name)
@@ -231,7 +215,7 @@ class QueryManager
      */
     protected function getBoolTransformer()
     {
-        return new BooleanToStringTransformer(true);
+        return new BooleanToStringTransformer('1', ['false', '0']);
     }
 
     /**
