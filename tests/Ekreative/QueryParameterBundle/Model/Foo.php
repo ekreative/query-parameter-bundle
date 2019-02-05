@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Ekreative\QueryParameterBundle\Model;
-
 
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -11,7 +11,7 @@ class Foo
     /**
      * @var string
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $name;
 
