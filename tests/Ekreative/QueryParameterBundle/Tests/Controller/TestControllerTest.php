@@ -27,16 +27,7 @@ class TestControllerTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $this->assertEquals('false', $client->getResponse()->getContent());
     }
-
-    public function testBoolRequired()
-    {
-        $client = self::createClient();
-
-        $client->request('GET', '/param');
-
-        $this->assertEquals(400, $client->getResponse()->getStatusCode());
-    }
-
+    
     public function testModel()
     {
         $client = self::createClient();
