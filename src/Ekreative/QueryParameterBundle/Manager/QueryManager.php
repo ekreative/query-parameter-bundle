@@ -35,17 +35,18 @@ class QueryManager
     {
         $this->validator = $validator;
 
-        $int = $this->getIntTransformer();
-        $bool = $this->getBoolTransformer();
-        $double = $this->getFloatTransformer();
+        $int = new IntegerToLocalizedStringTransformer();
+        $bool = new BooleanToStringTransformer('1', ['false', '0']);
+        $double = new NumberToLocalizedStringTransformer();
         $this->transformers = [
             'integer' => $int,
             'int' => $int,
-            'datetime' => $this->getDateTimeTransformer(),
+            'datetime' => new DateTimeToStringTransformer(null, null, \DateTime::ISO8601),
             'boolean' => $bool,
             'bool' => $bool,
             'double' => $double,
             'float' => $double,
+            'string' => null,
         ];
     }
 
@@ -100,7 +101,7 @@ class QueryManager
      * @throws BadRequestHttpException
      * @throws NotFoundTransformerException
      */
-    protected function manageQueryModel(Request $request, QueryModel $configuration)
+    private function manageQueryModel(Request $request, QueryModel $configuration)
     {
         $className = $configuration->getClass();
         $types = $configuration->getOptions()['types'];
@@ -121,7 +122,9 @@ class QueryManager
             $queryParam = $request->query->get($k);
             if (null !== $queryParam) {
                 $transformer = $this->getTransformer($type);
-                $parameters[$k] = $transformer->reverseTransform(false == $queryParam ? null : $queryParam);
+                if ($transformer) {
+                    $parameters[$k] = $transformer->reverseTransform(false == $queryParam ? null : $queryParam);
+                }
                 $resolver->setAllowedTypes($k, $type);
             }
         }
@@ -157,7 +160,7 @@ class QueryManager
      * @throws ChoiceBadParameterException
      * @throws NotFoundTransformerException
      */
-    protected function manageQueryParameter(Request $request, QueryParameter $configuration)
+    private function manageQueryParameter(Request $request, QueryParameter $configuration)
     {
         $parameterName = $configuration->getName();
 
@@ -174,7 +177,11 @@ class QueryManager
 
         if ($configuration->getType() != 'choice') {
             $transformer = $this->getTransformer($configuration->getType());
-            $transformedParameter = $transformer->reverseTransform($parameter);
+            if ($transformer) {
+                $transformedParameter = $transformer->reverseTransform($parameter);
+            } else {
+                $transformedParameter = $parameter;
+            }
 
             $request->attributes->set($parameterName, $transformedParameter);
         } elseif (!\in_array($parameter, $configuration->getOptions()['choices'])) {
@@ -191,44 +198,12 @@ class QueryManager
      *
      * @throws NotFoundTransformerException
      */
-    protected function getTransformer($name)
+    private function getTransformer($name)
     {
         if (!array_key_exists($name, $this->transformers)) {
             throw new NotFoundTransformerException($name);
         }
 
         return $this->transformers[$name];
-    }
-
-    /**
-     * @return IntegerToLocalizedStringTransformer
-     */
-    protected function getIntTransformer()
-    {
-        return new IntegerToLocalizedStringTransformer();
-    }
-
-    /**
-     * @return DateTimeToStringTransformer
-     */
-    protected function getDateTimeTransformer()
-    {
-        return new DateTimeToStringTransformer();
-    }
-
-    /**
-     * @return BooleanToStringTransformer
-     */
-    protected function getBoolTransformer()
-    {
-        return new BooleanToStringTransformer('1', ['false', '0']);
-    }
-
-    /**
-     * @return NumberToLocalizedStringTransformer
-     */
-    protected function getFloatTransformer()
-    {
-        return new NumberToLocalizedStringTransformer();
     }
 }

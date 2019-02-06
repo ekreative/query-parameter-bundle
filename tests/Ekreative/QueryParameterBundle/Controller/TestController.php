@@ -13,12 +13,48 @@ use Symfony\Component\Routing\Annotation\Route;
 class TestController
 {
     /**
-     * @Route("/param")
-     * @QueryParameter("test", type="boolean", options={"required": true})
+     * @Route("/param/bool")
+     * @QueryParameter("test", type="bool", options={"required": true})
      */
-    public function paramAction(bool $test)
+    public function paramBoolAction(bool $test)
     {
         return new Response($test ? 'true' : 'false', 200);
+    }
+
+    /**
+     * @Route("/param/int")
+     * @QueryParameter("test", type="int", options={"required": true})
+     */
+    public function paramIntAction(int $test)
+    {
+        return new Response("$test", 200);
+    }
+
+    /**
+     * @Route("/param/string")
+     * @QueryParameter("test", type="string", options={"required": true})
+     */
+    public function paramStringAction(string $test)
+    {
+        return new Response($test, 200);
+    }
+
+    /**
+     * @Route("/param/date")
+     * @QueryParameter("test", type="datetime", options={"required": true})
+     */
+    public function paramDateAction(\DateTime $test)
+    {
+        return new Response($test->format('c'), 200);
+    }
+
+    /**
+     * @Route("/param/float")
+     * @QueryParameter("test", type="float", options={"required": true})
+     */
+    public function paramFloatAction(float $test)
+    {
+        return new Response("$test", 200);
     }
 
     /**
