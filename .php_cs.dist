@@ -1,7 +1,8 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->in(['src', 'tests']);
+    ->in(['src', 'tests'])
+    ->exclude(['cache']);
 
 return PhpCsFixer\Config::create()
     ->setRules([
