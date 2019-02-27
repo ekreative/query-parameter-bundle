@@ -200,7 +200,7 @@ class QueryManager
      */
     private function getTransformer($name)
     {
-        if (!array_key_exists($name, $this->transformers)) {
+        if (!\array_key_exists($name, $this->transformers)) {
             throw new NotFoundTransformerException($name);
         }
 
