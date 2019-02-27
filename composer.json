@@ -31,5 +31,10 @@
         "symfony/monolog-bundle": "^3.0|^4.0",
         "friendsofphp/php-cs-fixer": "^2.14",
         "symfony/yaml": "^3.0|^4.0"
+    },
+    "extra": {
+        "symfony": {
+            "require": "^4.2"
+        }
     }
 }

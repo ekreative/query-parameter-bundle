@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c839ab2c55906784f1ed038a0e8cb08f",
+    "content-hash": "3134f2b4d7037f944db38e32dd5b60b6",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1986,7 +1986,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
