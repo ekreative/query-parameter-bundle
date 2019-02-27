@@ -6,10 +6,10 @@ namespace Ekreative\QueryParameterBundle\Manager;
 
 use Ekreative\QueryParameterBundle\Annotation\QueryModel;
 use Ekreative\QueryParameterBundle\Annotation\QueryParameter;
+use Ekreative\QueryParameterBundle\DataTransformer\BooleanToStringTransformer;
 use Ekreative\QueryParameterBundle\Exception\ChoiceBadParameterException;
 use Ekreative\QueryParameterBundle\Exception\NotFoundTransformerException;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Extension\Core\DataTransformer\BooleanToStringTransformer;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer;
 use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
@@ -200,7 +200,7 @@ class QueryManager
      */
     private function getTransformer($name)
     {
-        if (!array_key_exists($name, $this->transformers)) {
+        if (!\array_key_exists($name, $this->transformers)) {
             throw new NotFoundTransformerException($name);
         }
 
