@@ -39,14 +39,12 @@ abstract class QueryAnnotation implements ConfigurationInterface
 
     /**
      * QueryAnnotation constructor.
-     *
-     * @param array $values
      */
     public function __construct(array $values)
     {
         foreach ($values as $k => $v) {
             if (!method_exists($this, $name = 'set'.$k)) {
-                throw new \RuntimeException(sprintf('Unknown key "%s" for annotation "@%s".', $k, \get_class($this)));
+                throw new \RuntimeException(sprintf('Unknown key "%s" for annotation "@%s".', $k, static::class));
             }
 
             $this->$name($v);
@@ -86,8 +84,6 @@ abstract class QueryAnnotation implements ConfigurationInterface
 
     /**
      * Default values for parameter options.
-     *
-     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {

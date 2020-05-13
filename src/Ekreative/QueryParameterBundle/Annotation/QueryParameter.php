@@ -17,8 +17,6 @@ class QueryParameter extends QueryAnnotation
 {
     /**
      * Default values for parameter options.
-     *
-     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
