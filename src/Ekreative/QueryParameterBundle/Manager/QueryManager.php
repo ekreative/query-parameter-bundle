@@ -51,9 +51,6 @@ class QueryManager
     }
 
     /**
-     * @param Request $request
-     * @param array   $configurations
-     *
      * @return Request
      */
     public function manage(Request $request, array $configurations)
@@ -78,9 +75,6 @@ class QueryManager
     }
 
     /**
-     * @param array $params
-     * @param array $requestParams
-     *
      * @throws BadRequestHttpException
      */
     private function checkParameters(array $params, array $requestParams)
@@ -93,9 +87,6 @@ class QueryManager
     }
 
     /**
-     * @param Request    $request
-     * @param QueryModel $configuration
-     *
      * @return Request
      *
      * @throws BadRequestHttpException
@@ -134,7 +125,7 @@ class QueryManager
 
         foreach ($queries as $k => $v) {
             if (!$accessor->isWritable($filter, $k)) {
-                throw new \RuntimeException(sprintf('Unknown key "%s" for filter "@%s".', $k, \get_class($this)));
+                throw new \RuntimeException(sprintf('Unknown key "%s" for filter "@%s".', $k, static::class));
             }
 
             $accessor->setValue($filter, $k, $v);
@@ -151,9 +142,6 @@ class QueryManager
     }
 
     /**
-     * @param Request        $request
-     * @param QueryParameter $configuration
-     *
      * @return Request
      *
      * @throws BadRequestHttpException
