@@ -45,7 +45,7 @@ class QueryConverterListener implements EventSubscriberInterface
     private function handleRequest(Request $request): void
     {
         if ($configurations = $request->attributes->get('_queries')) {
-            $this->queryManager->manage($request, (array)$configurations);
+            $this->queryManager->manage($request, (array) $configurations);
         }
     }
 }
